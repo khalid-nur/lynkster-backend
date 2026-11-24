@@ -1,7 +1,9 @@
 package com.lynkster.backend.auth.controller;
 
+import com.lynkster.backend.auth.dto.request.LoginRequest;
 import com.lynkster.backend.auth.dto.request.RegisterRequest;
 import com.lynkster.backend.auth.dto.request.ResendVerificationRequest;
+import com.lynkster.backend.auth.dto.response.LoginResponse;
 import com.lynkster.backend.auth.dto.response.UserDto;
 import com.lynkster.backend.auth.service.AuthService;
 import com.lynkster.backend.auth.service.EmailVerificationService;
@@ -74,6 +76,27 @@ public class AuthController {
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    /**
+     * Authenticates a user and returns a JWT access token
+     */
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<LoginResponse>> login(
+            @Valid @RequestBody LoginRequest request
+    ) {
+
+        // Authenticate the user and generate the access token
+        LoginResponse loginResponse = authService.login(request);
+
+        ApiResponse<LoginResponse> response = ApiResponse.response(
+                true,
+                "Login successful",
+                loginResponse,
+                HttpStatus.OK.value()
+        );
+
+        return ResponseEntity.ok(response);
     }
 }
 
